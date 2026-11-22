@@ -1,9 +1,9 @@
 ﻿using System.Globalization;
 using System.Text;
-using RealDrive.Hardware;
-using RealDrive.Sim.Lmu;
+using SimApex.Hardware;
+using SimApex.Sim.Lmu;
 
-// RealDrive diagnostics: read-only discovery of devices and LMU shared memory.
+// SimApex diagnostics: read-only discovery of devices and LMU shared memory.
 // Nothing here sends force feedback or writes to any device or game file.
 
 CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
@@ -26,7 +26,7 @@ try
             DumpLmu(args);
             break;
         case "report":
-            WriteFullReport(args.Length > 1 ? args[1] : "realdrive-diagnostics.txt");
+            WriteFullReport(args.Length > 1 ? args[1] : "simapex-diagnostics.txt");
             break;
         default:
             PrintHelp();
@@ -127,7 +127,7 @@ static void DumpLmu(string[] args)
 static void WriteFullReport(string path)
 {
     var sb = new StringBuilder();
-    sb.AppendLine(CultureInfo.InvariantCulture, $"RealDrive diagnostics {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+    sb.AppendLine(CultureInfo.InvariantCulture, $"SimApex diagnostics {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
     sb.AppendLine(CultureInfo.InvariantCulture, $"OS: {Environment.OSVersion}  .NET: {Environment.Version}");
     sb.AppendLine();
     sb.Append(HidReport());
@@ -141,7 +141,7 @@ static void WriteFullReport(string path)
 static void PrintHelp()
 {
     Console.WriteLine("""
-        RealDrive diagnostics (read-only)
+        SimApex diagnostics (read-only)
 
           hid                         list Fanatec and Thrustmaster HID interfaces
           hid-watch <index> [s]       print raw input reports of one interface when they change

@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\RealDrive.Core\RealDrive.Core.csproj" />
-    <ProjectReference Include="..\..\src\RealDrive.Analysis\RealDrive.Analysis.csproj" />
+    <ProjectReference Include="..\..\src\SimApex.Core\SimApex.Core.csproj" />
+    <ProjectReference Include="..\..\src\SimApex.Analysis\SimApex.Analysis.csproj" />
   </ItemGroup>
 
 </Project>

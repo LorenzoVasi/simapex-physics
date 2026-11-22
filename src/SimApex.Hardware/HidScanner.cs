@@ -1,6 +1,6 @@
 using HidSharp;
 
-namespace RealDrive.Hardware;
+namespace SimApex.Hardware;
 
 /// <summary>One HID interface found on the system.</summary>
 public sealed record HidInterfaceInfo(

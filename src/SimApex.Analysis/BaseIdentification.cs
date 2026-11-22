@@ -1,6 +1,6 @@
-using RealDrive.Core;
+using SimApex.Core;
 
-namespace RealDrive.Analysis;
+namespace SimApex.Analysis;
 
 /// <summary>Identified mechanical parameters of a direct drive base with a given rim mounted.</summary>
 /// <param name="Inertia">J, kg·m².</param>

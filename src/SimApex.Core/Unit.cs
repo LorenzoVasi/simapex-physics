@@ -1,4 +1,4 @@
-namespace RealDrive.Core;
+namespace SimApex.Core;
 
 /// <summary>
 /// SI units used inside the domain. Conversions from other units happen only at the

@@ -1,4 +1,4 @@
-namespace RealDrive.Analysis;
+namespace SimApex.Analysis;
 
 /// <summary>
 /// Savitzky–Golay smoothing differentiator for uniformly sampled signals.

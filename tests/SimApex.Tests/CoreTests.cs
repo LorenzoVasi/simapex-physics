@@ -1,6 +1,6 @@
-using RealDrive.Core;
+using SimApex.Core;
 
-namespace RealDrive.Tests;
+namespace SimApex.Tests;
 
 public class QuantityTests
 {

@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.IO.MemoryMappedFiles;
 using System.Security.Cryptography;
 
-namespace RealDrive.Sim.Lmu;
+namespace SimApex.Sim.Lmu;
 
 /// <summary>Result of probing one named shared memory mapping.</summary>
 /// <param name="Name">Mapping name.</param>

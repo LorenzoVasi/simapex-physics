@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SimApex Physics</title>
+<meta name="description" content="Calibrate your sim-racing rig to real-car physics from measured data, not presets. Open source, MIT.">
+<meta property="og:title" content="SimApex Physics">
+<meta property="og:description" content="Feel the real car, not a preset. Measured, traceable force-feedback calibration for sim racing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23111418'/%3E%3Cpath d='M6 24 L16 7 L26 24' fill='none' stroke='%23ff5a1f' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root {
+  --bg: #0b0d10;
+  --bg-2: #111418;
+  --card: #161a20;
+  --line: #262c35;
+  --text: #eef1f5;
+  --muted: #9aa4b2;
+  --accent: #ff5a1f;
+  --accent-2: #ffb020;
+  --ok: #3ddc97;
+  --info: #5cc8ff;
+  --radius: 14px;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  --sans: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 17px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+.kerb { height: 6px; background: repeating-linear-gradient(90deg, var(--accent) 0 28px, #f5f5f5 28px 56px); }
+
+/* Nav */
+nav { position: sticky; top: 0; z-index: 10; background: rgba(11,13,16,.82); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .02em; text-decoration: none; white-space: nowrap; }
+.logo svg { width: 28px; height: 28px; }
+.logo span { color: var(--accent); }
+nav ul { display: flex; gap: 26px; list-style: none; margin: 0; padding: 0; font-size: 15px; }
+nav ul a { text-decoration: none; color: var(--muted); }
+nav ul a:hover { color: var(--text); }
+@media (max-width: 760px) { nav ul li:not(:last-child) { display: none; } }
+
+/* Hero */
+.hero { position: relative; overflow: hidden; padding: 88px 0 72px; }
+.hero::before { content: ""; position: absolute; inset: 0; background:
+  radial-gradient(800px 400px at 85% 10%, rgba(255,90,31,.18), transparent 60%),
+  radial-gradient(600px 300px at 0% 100%, rgba(92,200,255,.10), transparent 60%); pointer-events: none; }
+.hero .wrap { position: relative; display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+@media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; } }
+.badge { display: inline-flex; gap: 8px; align-items: center; font: 600 12px/1 var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--accent-2); border: 1px solid rgba(255,176,32,.35); border-radius: 99px; padding: 8px 12px; }
+.badge i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-2); box-shadow: 0 0 10px var(--accent-2); animation: pulse 1.6s infinite; }
+@keyframes pulse { 50% { opacity: .35; } }
+h1 { font-size: clamp(40px, 6vw, 68px); line-height: 1.02; margin: 20px 0 18px; letter-spacing: -.02em; }
+h1 em { font-style: normal; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lead { font-size: 19px; color: var(--muted); max-width: 34em; margin: 0 0 30px; }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 20px; border-radius: 10px; font-weight: 600; text-decoration: none; transition: transform .15s, background .15s; }
+.btn:hover { transform: translateY(-2px); }
+.btn.primary { background: var(--accent); color: #fff; }
+.btn.ghost { border: 1px solid var(--line); background: var(--bg-2); }
+
+/* Scope */
+.scope { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 18px 12px; box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+.scope-head { display: flex; justify-content: space-between; font: 12px var(--mono); color: var(--muted); margin-bottom: 8px; }
+.scope-head b { color: var(--ok); font-weight: 600; }
+.scope svg { width: 100%; height: auto; display: block; }
+.trace { fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1400; stroke-dashoffset: 1400; animation: draw 3.2s ease-out forwards; }
+.trace.b { animation-delay: .5s; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.legend { display: flex; gap: 18px; font: 12px var(--mono); color: var(--muted); margin-top: 8px; flex-wrap: wrap; }
+.legend span::before { content: ""; display: inline-block; width: 14px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: middle; background: var(--c); }
+.fit { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+.fit div { background: var(--bg-2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font: 12px/1.4 var(--mono); color: var(--muted); }
+.fit b { display: block; color: var(--text); font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { .trace { animation: none; stroke-dashoffset: 0; } .badge i { animation: none; } }
+
+/* Sections */
+section { padding: 84px 0; border-top: 1px solid var(--line); }
+.eyebrow { font: 600 12px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+h2 { font-size: clamp(28px, 4vw, 42px); line-height: 1.1; margin: 10px 0 14px; letter-spacing: -.015em; }
+.sub { color: var(--muted); max-width: 44em; margin: 0 0 40px; }
+.grid { display: grid; gap: 18px; }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+.g4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 900px) { .g3, .g4 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 580px) { .g3, .g4 { grid-template-columns: 1fr; } }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
+.card h3 { margin: 0 0 8px; font-size: 19px; }
+.card p { margin: 0; color: var(--muted); font-size: 15.5px; }
+.num { font: 600 13px var(--mono); color: var(--accent); margin-bottom: 14px; display: block; }
+.step { position: relative; }
+.step::after { content: ""; position: absolute; top: 34px; right: -18px; width: 18px; height: 2px; background: var(--line); }
+.g4 .step:last-child::after { display: none; }
+@media (max-width: 900px) { .step::after { display: none; } }
+
+/* Loop */
+.flow { padding: 18px; overflow-x: auto; }
+.flow svg { width: 100%; min-width: 560px; height: auto; display: block; }
+.loopline { animation: dash 1.2s linear infinite; }
+@keyframes dash { to { stroke-dashoffset: -22; } }
+@media (prefers-reduced-motion: reduce) { .loopline { animation: none; } }
+
+/* Model */
+.model { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center; }
+@media (max-width: 900px) { .model { grid-template-columns: 1fr; } }
+.eq { font: 600 clamp(16px, 2.2vw, 22px)/1.5 var(--mono); background: var(--bg-2); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 10px; padding: 22px 24px; overflow-x: auto; }
+.eq small { display: block; font-weight: 400; font-size: 13px; color: var(--muted); margin-top: 10px; }
+.terms { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 8px; font-size: 15px; color: var(--muted); }
+.terms code { font: 600 14px var(--mono); color: var(--text); background: var(--bg-2); padding: 2px 7px; border-radius: 5px; margin-right: 6px; }
+.chain svg { width: 100%; height: auto; }
+
+/* Passport */
+.passport { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center; }
+@media (max-width: 900px) { .passport { grid-template-columns: 1fr; } }
+.pp { background: linear-gradient(160deg, #1b2027, #12161b); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; font-family: var(--mono); font-size: 14px; }
+.pp .row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--line); }
+.pp .row:last-child { border: 0; }
+.pp .k { color: var(--muted); }
+.pp .v { text-align: right; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 5px; font-size: 12px; font-weight: 600; }
+.tag.decl { background: rgba(255,176,32,.15); color: var(--accent-2); }
+.kinds { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.kinds span { font: 600 12px var(--mono); padding: 6px 10px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); }
+
+/* Safety */
+.safety li { margin-bottom: 10px; }
+.check { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+.check li { display: flex; gap: 12px; align-items: flex-start; color: var(--muted); }
+.check li b { color: var(--text); }
+.check svg { flex: none; width: 22px; height: 22px; margin-top: 2px; }
+
+/* Roadmap */
+.road { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+@media (max-width: 900px) { .road { grid-template-columns: 1fr; gap: 14px; } }
+.ph { padding: 22px 20px; border-top: 3px solid var(--line); }
+.ph.done { border-color: var(--ok); }
+.ph.now { border-color: var(--accent); }
+.ph .st { font: 600 12px var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+.ph.done .st { color: var(--ok); }
+.ph.now .st { color: var(--accent); }
+.ph.next .st { color: var(--muted); }
+.ph h3 { margin: 6px 0; font-size: 18px; }
+.ph p { margin: 0; font-size: 15px; color: var(--muted); }
+
+/* Rig */
+.rig .card { text-align: left; }
+.rig .card .k { font: 600 12px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.rig .card .v { font-size: 20px; font-weight: 700; margin-top: 6px; }
+
+/* Final */
+.final { text-align: center; }
+.final .cta { justify-content: center; }
+.term { max-width: 640px; margin: 0 auto 30px; text-align: left; background: #07090b; border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; font: 14px/1.8 var(--mono); color: #c9d1d9; overflow-x: auto; }
+.term .p { color: var(--accent); user-select: none; }
+.term .c { color: #6b7684; }
+footer { border-top: 1px solid var(--line); padding: 30px 0 44px; color: var(--muted); font-size: 14px; }
+footer .wrap { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+@media (max-width: 580px) { .wrap { padding: 0 16px; } section { padding: 64px 0; } }
+</style>
+</head>
+<body>
+<div class="kerb"></div>
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#161a20"/><path d="M6 24 L16 7 L26 24" fill="none" stroke="#ff5a1f" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 19 H21" stroke="#ffb020" stroke-width="2.5" stroke-linecap="round"/></svg>
+      SimApex <span>Physics</span>
+    </a>
+    <ul>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#loop">The loop</a></li>
+      <li><a href="#model">The model</a></li>
+      <li><a href="#safety">Safety</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="https://github.com/LorenzoVasi/simapex-physics">GitHub ↗</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <span class="badge"><i></i> Early prototype · Open source · MIT</span>
+      <h1>Feel the real car.<br><em>Not a preset.</em></h1>
+      <p class="lead">SimApex Physics measures your wheel base and pedals, identifies the physics of <em>your</em> rig, and calibrates force feedback against real-car data. Every number carries its source and its uncertainty.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/LorenzoVasi/simapex-physics/blob/main/docs/quickstart.md">Quickstart →</a>
+        <a class="btn ghost" href="https://github.com/LorenzoVasi/simapex-physics">View on GitHub</a>
+      </div>
+    </div>
+
+    <div class="scope" role="img" aria-label="Illustration: alternating torque steps and the simulated wheel response, with fitted inertia, damping and friction">
+      <div class="scope-head"><span>P1 · alternating torque steps</span><b>● fit converged</b></div>
+      <svg viewBox="0 0 520 260">
+        <defs>
+          <pattern id="gr" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#222831" stroke-width="1"/></pattern>
+        </defs>
+        <rect width="520" height="260" fill="url(#gr)"/>
+        <line x1="0" y1="130" x2="520" y2="130" stroke="#3a424e" stroke-dasharray="4 4"/>
+        <path class="trace" stroke="#ff5a1f" d="M0 130 H20 V80 H85 V180 H150 V105 H215 V155 H280 V80 H345 V180 H410 V105 H475 V155 H520"/>
+        <path class="trace b" stroke="#5cc8ff" d="M20 130 C40 92, 60 86, 85 85 C105 84, 120 168, 150 175 C170 180, 185 112, 215 108 C235 106, 250 150, 280 152 C300 153, 315 90, 345 85 C365 82, 380 168, 410 175 C430 180, 445 112, 475 108 C495 106, 505 140, 520 150"/>
+      </svg>
+      <div class="legend"><span style="--c:#ff5a1f">commanded torque</span><span style="--c:#5cc8ff">wheel velocity</span></div>
+      <div class="fit">
+        <div>inertia J<b>0.045 kg·m²</b></div>
+        <div>damping b<b>0.060 N·m·s/rad</b></div>
+        <div>friction T<sub>c</sub><b>0.12 N·m</b></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="why">
+  <div class="wrap">
+    <span class="eyebrow">The problem</span>
+    <h2>Presets copy someone else's rig.</h2>
+    <p class="sub">Every base, rim and pedal set behaves differently. A slider value that feels right on one rig is wrong on the next, and nobody can say why.</p>
+    <div class="grid g3">
+      <div class="card"><h3>Hidden dynamics</h3><p>Motor inertia, internal damping and friction change what reaches your hands. Most tuning ignores them.</p></div>
+      <div class="card"><h3>Unknown scaling</h3><p>The game's torque passes through gains, filters and delays before it reaches the motor. Without measuring them you are guessing.</p></div>
+      <div class="card"><h3>Numbers without sources</h3><p>"Real car feel" claims rarely say where their data comes from or how sure they are.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <span class="eyebrow">How it works</span>
+    <h2>Probe. Measure. Identify. Calibrate.</h2>
+    <p class="sub">A measurement workflow, not a preset generator.</p>
+    <div class="grid g4">
+      <div class="card step"><span class="num">01 · PROBE</span><h3>Discover the rig</h3><p>Read-only scan of HID devices and the simulator's shared-memory telemetry. Nothing is written.</p></div>
+      <div class="card step"><span class="num">02 · MEASURE</span><h3>Run short tests</h3><p>Small alternating torque steps, within your limits, while the wheel's angle is recorded at high rate.</p></div>
+      <div class="card step"><span class="num">03 · IDENTIFY</span><h3>Fit the model</h3><p>Least squares over Savitzky–Golay derivatives gives inertia, damping, friction, gain and delay, with confidence intervals.</p></div>
+      <div class="card step"><span class="num">04 · CALIBRATE</span><h3>Match the real car</h3><p>The real steering-torque chain is mapped onto your rim within safe limits, then checked with on-center indices.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="loop">
+  <div class="wrap">
+    <span class="eyebrow">The closed loop</span>
+    <h2>No change counts until a new measurement proves it.</h2>
+    <p class="sub">Measured data from your session meets reference data from the physics model and its sources. You apply the proposal yourself, because Fanatec and Thrustmaster expose no write API. Then a new session checks the effect.</p>
+    <div class="card flow">
+      <svg viewBox="0 0 760 500" role="img" aria-label="Data flow: LMU telemetry, CSL DD angle and T-LCM brake feed a recorder; signal analysis and the physics model meet in the comparison; a proposal checked by the safety layer is applied by the user, then a new test session closes the loop">
+        <defs>
+          <marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5a6472"/></marker>
+          <marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ff5a1f"/></marker>
+        </defs>
+        <g fill="none" stroke="#5a6472" stroke-width="1.4">
+          <path d="M148 94V130" marker-end="url(#fa)"/><path d="M380 94V130" marker-end="url(#fa)"/><path d="M612 94V130" marker-end="url(#fa)"/>
+          <path d="M148 188V226" marker-end="url(#fa)"/>
+          <path d="M248 256H278" marker-end="url(#fa)"/><path d="M512 256H482" marker-end="url(#fa)"/>
+          <path d="M380 284V322" marker-end="url(#fa)"/><path d="M380 380V418" marker-end="url(#fa)"/>
+        </g>
+        <path class="loopline" d="M48 448H24V66H46" fill="none" stroke="#ff5a1f" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#fl)"/>
+        <text x="14" y="262" text-anchor="middle" font-size="12" fill="#ff5a1f" font-family="JetBrains Mono, monospace" transform="rotate(-90 14 262)">new test session</text>
+        <g font-family="Space Grotesk, system-ui, sans-serif" text-anchor="middle">
+          <g><rect x="48" y="38" width="200" height="56" rx="9" fill="#1d232b" stroke="#2f3742"/><text x="148" y="62" font-weight="700" font-size="14" fill="#eef1f5">LMU shared memory</text><text x="148" y="80" font-size="12" fill="#9aa4b2">telemetry at 100 Hz</text></g>
+          <g><rect x="280" y="38" width="200" height="56" rx="9" fill="#1d232b" stroke="#2f3742"/><text x="380" y="62" font-weight="700" font-size="14" fill="#eef1f5">CSL DD (HID)</text><text x="380" y="80" font-size="12" fill="#9aa4b2">wheel angle</text></g>
+          <g><rect x="512" y="38" width="200" height="56" rx="9" fill="#1d232b" stroke="#2f3742"/><text x="612" y="62" font-weight="700" font-size="14" fill="#eef1f5">T-LCM (HID)</text><text x="612" y="80" font-size="12" fill="#9aa4b2">raw brake value</text></g>
+          <g><rect x="48" y="132" width="664" height="56" rx="9" fill="#1d232b" stroke="#2f3742"/><text x="380" y="156" font-weight="700" font-size="14" fill="#eef1f5">Recorder</text><text x="380" y="174" font-size="12" fill="#9aa4b2">single clock (QPC), field validation, Parquet output</text></g>
+          <g><rect x="48" y="228" width="200" height="56" rx="9" fill="#1d232b" stroke="#2f3742"/><text x="148" y="252" font-weight="700" font-size="14" fill="#eef1f5">Signal analysis</text><text x="148" y="270" font-size="12" fill="#9aa4b2">indices, spectra, clipping</text></g>
+          <g><rect x="280" y="228" width="200" height="56" rx="9" fill="rgba(255,90,31,.14)" stroke="#ff5a1f" stroke-width="2"/><text x="380" y="252" font-weight="700" font-size="14" fill="#eef1f5">Comparison</text><text x="380" y="270" font-size="12" fill="#ffd2bf">deviations with uncertainty</text></g>
+          <g><rect x="512" y="228" width="200" height="56" rx="9" fill="#1d232b" stroke="#2f3742"/><text x="612" y="252" font-weight="700" font-size="14" fill="#eef1f5">Physics model</text><text x="612" y="270" font-size="12" fill="#9aa4b2">LMGT3 reference + sources</text></g>
+          <g><rect x="230" y="324" width="300" height="56" rx="9" fill="#1d232b" stroke="#2f3742"/><text x="380" y="348" font-weight="700" font-size="14" fill="#eef1f5">Proposed change</text><text x="380" y="366" font-size="12" fill="#9aa4b2">checked by the safety layer</text></g>
+          <g><rect x="48" y="420" width="664" height="56" rx="9" fill="#1d232b" stroke="#2f3742"/><text x="380" y="444" font-weight="700" font-size="14" fill="#eef1f5">Applied by you</text><text x="380" y="462" font-size="12" fill="#9aa4b2">Fanatec App, T-LCM software, LMU menus · backup before every change</text></g>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="model">
+  <div class="wrap model">
+    <div>
+      <span class="eyebrow">The model</span>
+      <h2>Your wheel base, as an equation.</h2>
+      <p class="sub" style="margin-bottom:22px">A compact physical model whose parameters can be measured, not tuned by feel.</p>
+      <div class="eq">J·θ̈ + b·θ̇ + T<sub>c</sub>·sgn(θ̇) = k·T<sub>game</sub>(t − τ)<small>identified from P1 test data · tested on simulated data with known parameters</small></div>
+      <ul class="terms">
+        <li><code>J</code>rotating inertia of motor and rim</li>
+        <li><code>b</code>viscous damping</li>
+        <li><code>T<sub>c</sub></code>Coulomb friction</li>
+        <li><code>k, τ</code>game-to-base gain and delay</li>
+      </ul>
+    </div>
+    <div class="chain card">
+      <svg viewBox="0 0 460 300" role="img" aria-label="Steering chain: tyre self-aligning torque, rack force, pinion, steering column, your hands">
+        <g font-family="JetBrains Mono, monospace" font-size="13" fill="#eef1f5">
+          <rect x="20" y="20" width="420" height="46" rx="10" fill="#1d232b" stroke="#ff5a1f"/>
+          <text x="40" y="49">Tyre  M<tspan font-size="10" dy="3">z</tspan><tspan dy="-3"> = −t</tspan><tspan font-size="10" dy="3">p</tspan><tspan dy="-3">·F</tspan><tspan font-size="10" dy="3">y</tspan></text>
+          <text x="420" y="49" text-anchor="end" fill="#9aa4b2" font-size="11">Magic Formula</text>
+          <path d="M230 66 V86" stroke="#3a424e" stroke-width="2" marker-end="url(#ar)"/>
+          <rect x="20" y="90" width="420" height="40" rx="10" fill="#1d232b" stroke="#262c35"/>
+          <text x="40" y="115">Rack force</text>
+          <path d="M230 130 V150" stroke="#3a424e" stroke-width="2"/>
+          <rect x="20" y="154" width="420" height="40" rx="10" fill="#1d232b" stroke="#262c35"/>
+          <text x="40" y="179">Pinion → steering column</text>
+          <path d="M230 194 V214" stroke="#3a424e" stroke-width="2"/>
+          <rect x="20" y="218" width="420" height="58" rx="10" fill="rgba(255,90,31,.12)" stroke="#ff5a1f"/>
+          <text x="40" y="243" font-weight="600">Your hands, on your rim</text>
+          <text x="40" y="263" fill="#9aa4b2" font-size="11">scaled to your base · within your torque limit</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="passport">
+  <div class="wrap passport">
+    <div>
+      <span class="eyebrow">Scientific rigor</span>
+      <h2>Every number has a passport.</h2>
+      <p class="sub" style="margin-bottom:0">No invented data. Each value carries its unit, its uncertainty, what kind of value it is and where it came from. If something is unknown, it says "unknown".</p>
+      <div class="kinds"><span>Measurement</span><span>Declaration</span><span>Estimate</span><span>SimTelemetry</span><span>UserInput</span></div>
+    </div>
+    <div class="pp" aria-label="Example of a documented quantity">
+      <div class="row"><span class="k">quantity</span><span class="v">CSL DD peak torque</span></div>
+      <div class="row"><span class="k">value</span><span class="v">8 N·m</span></div>
+      <div class="row"><span class="k">uncertainty</span><span class="v">unknown</span></div>
+      <div class="row"><span class="k">kind</span><span class="v"><span class="tag decl">Declaration</span></span></div>
+      <div class="row"><span class="k">source</span><span class="v">Fanatec product page (with Boost Kit)</span></div>
+      <div class="row"><span class="k">status</span><span class="v">to be confirmed by measurement</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="safety" class="safety">
+  <div class="wrap">
+    <span class="eyebrow">Safety first</span>
+    <h2>Your hardware, protected.</h2>
+    <p class="sub">Direct-drive bases are strong. SimApex is built to stay well inside the lines.</p>
+    <ul class="check">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="#3ddc97" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span><b>User torque limit.</b> Every test runs below a limit you set, enforced by a safety state machine with an immediate stop.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="#3ddc97" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span><b>Backups before changes.</b> Settings are saved before anything is touched, and can be restored.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="#3ddc97" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span><b>Device protections stay on.</b> No firmware changes and nothing invasive. Only supported interfaces are used.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="#3ddc97" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span><b>Read-only by default.</b> The current tools only observe: no force feedback is sent.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="rig" class="rig">
+  <div class="wrap">
+    <span class="eyebrow">First target</span>
+    <h2>Built on a real rig.</h2>
+    <p class="sub">The first setup being calibrated end to end. More simulators and devices will follow.</p>
+    <div class="grid g4">
+      <div class="card"><div class="k">Simulator</div><div class="v">Le Mans Ultimate</div></div>
+      <div class="card"><div class="k">Wheel base</div><div class="v">Fanatec CSL DD</div></div>
+      <div class="card"><div class="k">Pedals</div><div class="v">Thrustmaster T-LCM</div></div>
+      <div class="card"><div class="k">Car class</div><div class="v">LMGT3</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="roadmap">
+  <div class="wrap">
+    <span class="eyebrow">Roadmap</span>
+    <h2>Where we are.</h2>
+    <p class="sub">Honest status, phase by phase.</p>
+    <div class="road">
+      <div class="ph done"><span class="st">✓ Done</span><h3>A · Feasibility</h3><p>What can be measured and controlled, with sources and reliability levels.</p></div>
+      <div class="ph done"><span class="st">✓ Done</span><h3>B · Design</h3><p>Steering model, identification tests, safety state machine, architecture.</p></div>
+      <div class="ph now"><span class="st">● In progress</span><h3>C · Prototype</h3><p>Identification core with tests, read-only diagnostics. Next: LMU recorder, pedal wizard, P1 test.</p></div>
+      <div class="ph next"><span class="st">○ Planned</span><h3>D · Full app</h3><p>Windows app with guided calibration, reports and more cars and devices.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2>Try the diagnostics on your rig.</h2>
+    <p class="sub" style="margin:0 auto 30px">Read-only. Lists your devices and checks LMU telemetry in seconds.</p>
+    <div class="term">
+      <div><span class="p">❯ </span>git clone https://github.com/LorenzoVasi/simapex-physics.git</div>
+      <div><span class="p">❯ </span>cd simapex-physics</div>
+      <div><span class="p">❯ </span>dotnet test SimApex.slnx <span class="c"># 13 passing</span></div>
+      <div><span class="p">❯ </span>dotnet run --project tools/SimApex.Diagnostics -- report</div>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/LorenzoVasi/simapex-physics/blob/main/docs/quickstart.md">Read the quickstart</a>
+      <a class="btn ghost" href="https://github.com/LorenzoVasi/simapex-physics/blob/main/docs/documentation-rules.md">Documentation rules</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>SimApex Physics · MIT License</span>
+    <span>Not affiliated with Fanatec, Thrustmaster, Motorsport Games or Studio 397.</span>
+  </div>
+</footer>
+</body>
+</html>

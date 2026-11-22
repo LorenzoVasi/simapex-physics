@@ -1,4 +1,4 @@
-namespace RealDrive.Core;
+namespace SimApex.Core;
 
 /// <summary>
 /// Origin of a numeric value. The UI must never show a value without its kind:

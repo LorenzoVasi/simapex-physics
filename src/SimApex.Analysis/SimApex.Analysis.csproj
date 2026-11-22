@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\RealDrive.Core\RealDrive.Core.csproj" />
+    <ProjectReference Include="..\SimApex.Core\SimApex.Core.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

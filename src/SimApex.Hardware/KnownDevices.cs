@@ -1,4 +1,4 @@
-namespace RealDrive.Hardware;
+namespace SimApex.Hardware;
 
 public enum DeviceRole
 {

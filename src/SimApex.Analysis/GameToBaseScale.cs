@@ -1,4 +1,4 @@
-namespace RealDrive.Analysis;
+namespace SimApex.Analysis;
 
 /// <summary>Effective scale and delay between the game's steering torque and the torque the base delivers.</summary>
 /// <param name="Gain">k: delivered N·m per N·m computed by the game.</param>

@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace RealDrive.Core;
+namespace SimApex.Core;
 
 /// <summary>
 /// A physical value with its SI unit, an uncertainty interval and its origin.

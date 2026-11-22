@@ -1,10 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\RealDrive.Core\RealDrive.Core.csproj" />
+    <ProjectReference Include="..\..\src\SimApex.Hardware\SimApex.Hardware.csproj" />
+    <ProjectReference Include="..\..\src\SimApex.Sim.Lmu\SimApex.Sim.Lmu.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>

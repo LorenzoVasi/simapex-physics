@@ -1,4 +1,4 @@
-namespace RealDrive.Tests;
+namespace SimApex.Tests;
 
 /// <summary>Synthetic wheel dynamics with known parameters, used as ground truth.</summary>
 internal static class Simulation

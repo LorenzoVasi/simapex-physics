@@ -1,8 +1,10 @@
-# SimApex Physics
+﻿# SimApex Physics
 
 Calibrate a sim-racing rig so that what you feel matches real-car physics, using measured data rather than presets.
 
 > Status: early prototype (Phase C). Not ready for end users.
+
+**[Project site](https://lorenzovasi.github.io/simapex-physics/)** · [Quickstart](docs/quickstart.md) · [Documentation rules](docs/documentation-rules.md)
 
 ## Principles
 
@@ -21,21 +23,25 @@ Calibrate a sim-racing rig so that what you feel matches real-car physics, using
 
 | Project | Purpose |
 |---|---|
-| `src/RealDrive.Core` | Quantities with units, uncertainty and data provenance |
-| `src/RealDrive.Analysis` | Savitzky–Golay differentiation, base identification (J, b, T_c), game-to-base scale and delay, logarithmic decrement |
-| `src/RealDrive.Sim.Lmu` | Read-only probe of LMU / rF2 shared memory |
-| `src/RealDrive.Hardware` | Read-only HID discovery of Fanatec and Thrustmaster devices |
-| `tools/RealDrive.Diagnostics` | Read-only diagnostics CLI (`hid`, `hid-watch`, `lmu`, `lmu-dump`, `report`) |
-| `tests/RealDrive.Tests` | Tests against simulated data with known parameters |
+| `src/SimApex.Core` | Quantities with units, uncertainty and data provenance |
+| `src/SimApex.Analysis` | Savitzkyâ€“Golay differentiation, base identification (J, b, T_c), game-to-base scale and delay, logarithmic decrement |
+| `src/SimApex.Sim.Lmu` | Read-only probe of LMU / rF2 shared memory |
+| `src/SimApex.Hardware` | Read-only HID discovery of Fanatec and Thrustmaster devices |
+| `tools/SimApex.Diagnostics` | Read-only diagnostics CLI (`hid`, `hid-watch`, `lmu`, `lmu-dump`, `report`) |
+| `tests/SimApex.Tests` | Tests against simulated data with known parameters |
 
 ## Build
 
 Requires the .NET 10 SDK on Windows.
 
 ```powershell
-dotnet test RealDrive.slnx
-dotnet run --project tools/RealDrive.Diagnostics -- report
+dotnet test SimApex.slnx
+dotnet run --project tools/SimApex.Diagnostics -- report
 ```
+
+## License
+
+MIT, see [LICENSE](LICENSE).
 
 ## Disclaimer
 

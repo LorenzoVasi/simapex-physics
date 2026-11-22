@@ -1,4 +1,4 @@
-namespace RealDrive.Analysis;
+namespace SimApex.Analysis;
 
 /// <summary>Small dense linear algebra for the few-parameter fits used here (n &lt;= 10).</summary>
 internal static class DenseSolver

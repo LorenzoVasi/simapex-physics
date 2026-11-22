@@ -1,6 +1,6 @@
-using RealDrive.Analysis;
+using SimApex.Analysis;
 
-namespace RealDrive.Tests;
+namespace SimApex.Tests;
 
 public class SavitzkyGolayTests
 {
@@ -90,9 +90,9 @@ public class GameToBaseScaleTests
         var game = Enumerable.Range(0, n).Select(i => Game(i * dt)).ToArray();
         var angle = Simulation.WheelAngle(Delivered, j, b, tc, dt, n);
         var parameters = new BaseParameters(
-            RealDrive.Core.Quantity.Exact(j, RealDrive.Core.Unit.KilogramMetreSquared, RealDrive.Core.DataKind.Measurement),
-            RealDrive.Core.Quantity.Exact(b, RealDrive.Core.Unit.NewtonMetreSecondPerRadian, RealDrive.Core.DataKind.Measurement),
-            RealDrive.Core.Quantity.Exact(tc, RealDrive.Core.Unit.NewtonMetre, RealDrive.Core.DataKind.Measurement),
+            SimApex.Core.Quantity.Exact(j, SimApex.Core.Unit.KilogramMetreSquared, SimApex.Core.DataKind.Measurement),
+            SimApex.Core.Quantity.Exact(b, SimApex.Core.Unit.NewtonMetreSecondPerRadian, SimApex.Core.DataKind.Measurement),
+            SimApex.Core.Quantity.Exact(tc, SimApex.Core.Unit.NewtonMetre, SimApex.Core.DataKind.Measurement),
             0,
             n);
 

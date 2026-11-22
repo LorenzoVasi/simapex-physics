@@ -1,4 +1,4 @@
-namespace RealDrive.Analysis;
+namespace SimApex.Analysis;
 
 /// <summary>Damping and frequency of a decaying oscillation (hands-off release, test M3).</summary>
 /// <param name="DampingRatio">ζ.</param>
