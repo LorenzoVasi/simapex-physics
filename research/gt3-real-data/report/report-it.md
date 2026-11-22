@@ -184,3 +184,17 @@ Le misure proprie necessarie sono poche e mirate:
 Il dato più prezioso per una calibrazione realistica non è un'altra cifra in Nm o in kg, ma **la relazione tra grandezze che le GT3 registrano già**. Le Porsche 992 hanno sensori di pressione per asse e un sensore d'angolo di sterzo, e i log reali di livello GT, come DS-R1 con circa 81 bar all'anteriore, mostrano pressioni coerenti con l'obiettivo di 100 bar. Bastano quindi due misure di trasferimento, forza al pedale contro pressione e coppia al volante contro angolo e velocità, per trasformare l'intero archivio di telemetria reale in forze e coppie calibrate. Senza queste due misure, ogni preset «realistico» per CSL DD e T-LCM è una stima di livello E travestita da dato. Con queste due misure, su una sola vettura e una sola generazione, SimApex Physics avrebbe la prima calibrazione GT3 pubblicamente difendibile.
 
 L'analisi rovescia anche la gerarchia dei limiti hardware. Il vincolo più stringente non è la coppia della CSL DD, che a 8 Nm probabilmente copre l'intervallo GT3 stimato, ma la pedaliera. La forza GT3 ricavata dal modello arriva al carico massimo della T-LCM, e la sua corsa passiva non può riprodurre la curva forza-corsa idraulica. Se il budget permette un solo aggiornamento hardware dopo le misure, la pedaliera attiva vale più di una base DD più potente.
+
+---
+
+## Aggiornamento 22/11/2026: manuale Bosch ABS M5 letto per intero
+
+Il manuale operativo Bosch ABS M5 Kit v1.3 (13/03/2026) è stato scaricato (SRC-142) e letto. Da questo vengono i record ABS-M5-001…021, tutti di livello B.
+
+- **Mappe.** Ci sono 11 mappe più OFF. La posizione 1 è la più sensibile (pioggia); salendo di posizione lo slip consentito aumenta e la 11 è la più aggressiva. Per partire si consigliano le posizioni 5–7.
+- **Controllo.** È ruota per ruota: la velocità di ciascuna ruota viene confrontata con la velocità stimata del veicolo, per tenerla allo "slip ottimale". Questo conferma una soglia variabile, non una percentuale di pedale.
+- **Ritorno al pedale.** Il manuale conferma ufficialmente che il pilota sente il ritorno al pedale dovuto alla pompa di ricircolo, ma non ne indica ampiezza né frequenza.
+- **Pressione di bloccaggio.** Bosch raccomanda al massimo 80 bar. È un'indicazione di progetto, non una misura su una GT3.
+- **Cordoli.** Sui disturbi del segnale ruota (cordoli) il controllo ABS di quella ruota resta congelato per la durata dell'evento.
+- **Canali CAN.** Sono disponibili `ABS_Active`, la posizione della mappa, le pressioni anteriore e posteriore (risoluzione 0,015 bar), le velocità delle ruote, il yaw rate e l'accelerazione laterale. Una telemetria reale di GT3 con ABS Bosch quindi contiene quasi certamente l'indicazione di quando l'ABS interviene.
+- **Valori di slip.** Gli slip numerici per mappa restano **non pubblici**: sono dati di calibrazione di Bosch e del costruttore.

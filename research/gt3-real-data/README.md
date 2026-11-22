@@ -14,7 +14,7 @@ This folder holds a research run on publicly available, verifiable data about re
 |---|---|---|
 | `README.md` | This file: scope, schema, findings snapshot, re-research protocol | yes |
 | `report/report-it.md` | Full report (Italian), sections A–G | yes |
-| `data/gt3_database.csv` / `.json` | 148 structured records, one value per row | yes |
+| `data/gt3_database.csv` / `.json` | 169 structured records, one value per row (148 from the six research lines + 21 from the Bosch ABS M5 manual) | yes |
 | `data/gt3_datasets.csv` | 20 telemetry datasets (16 real, 4 simulated) | yes |
 | `notes/*.md` | Raw notes from the six research lines, with all citations | yes |
 | `sources_index.csv` | Every source URL with download status, type, size, SHA-256 and date | yes |
@@ -67,7 +67,14 @@ Compare a future run against this list. Each line is a claim that a new run can 
 
 1. **Steering torque:** no public measured hand-wheel or column torque (N·m) exists for any homologated GT3. The 6–8 N·m and 8–12 N·m figures in circulation are level E. iRacing shows about 60 N·m peaks, which is SIMULATED. No standard GT3 steering-torque logger channel was found: SRO Appendix 15 has none, and Porsche 992 lists only an angle sensor.
 2. **Brake pedal force:** no public GT3 pedal-force measurement exists. The closest is about 100 bar line pressure (forum, E). A hydraulic model turns that into about 660–1035 N (DERIVED, D, ±30 % or worse). No GT3 publishes its master-cylinder bores or pedal ratio.
-3. **ABS:** the Bosch ABS M5 architecture is public (B): 12-position switch, 4 wheel speeds, pressure per circuit, slip options that depend on downforce and lateral g. Slip targets are not public. The operation manual was too large for the first run's fetch tool and should be read on the next run.
+3. **ABS:** the Bosch ABS M5 Kit Operation Manual v1.3 was read in full (records ABS-M5-001…021, level B).
+   - It has 11 maps plus OFF; position 1 is the most sensitive and higher positions allow more slip.
+   - Control is per wheel and targets an "optimum slip".
+   - The manual officially confirms pedal feedback from the return pump, but gives no amplitude.
+   - It recommends a locking pressure of max. 80 bar.
+   - ABS control freezes on kerb disturbances.
+   - `ABS_Active` and front/rear pressures are logged on CAN.
+   - Numeric slip targets per map are **not public** (calibration data).
 4. **Car specs (B):** Porsche 911 GT3 R 991.2 and 992.1, Audi R8 LMS evo II and BMW M4 GT3 are documented. No GT3 publishes its steering ratio, wheel diameter or lock-to-lock.
 5. **Datasets:** real logger files exist (HPAcademy course data: an unidentified "GT car" on MoTeC and a Ferrari 488 **GTE** on Bosch WinDarab). Neither is a confirmed GT3, neither has steering torque or pedal force, and neither states a licence.
 6. **Recommended prototype car:** Porsche 911 GT3 R 992.1 for physics. BMW M4 GT3 for hardware, because its real wheel is built by Fanatec.
@@ -95,7 +102,7 @@ Start with these. They are the most likely to move a finding.
 
 | Lead | Why | Status at baseline |
 |---|---|---|
-| Bosch ABS M5 Kit Operation Manual (`bosch-motorsport.com/.../Operation Manual_70618763_ABS_M5_Kit.pdf`) | May contain slip targets and per-map behaviour | Downloaded locally in the 2026-11-22 archive run (see `sources_index.csv`), content not yet analysed |
+| Bosch ABS M5 Kit Operation Manual (`bosch-motorsport.com/.../Operation Manual_70618763_ABS_M5_Kit.pdf`) | May contain slip targets and per-map behaviour | **Closed 2026-11-22.** Read in full; no numeric slip values (see `notes/abs.md` addendum). Re-check newer versions. |
 | Porsche Cup ABS manual, Manthey 991 Cup Gen 2 ABS manual | ABS map details | > 10 MB / 404 |
 | Chalmers thesis 230941, Cranfield and TU Delft F3 steering-force theses | Steering torque gradient (N·m/g) measurements | PDF not parsed / HTTP 500 |
 | Norman, SAE 840069; SAE 2008-01-0502; SAE 2006-01-0796 | On-centre method and values | Paywalled, abstracts only |

@@ -129,3 +129,30 @@ No public peak-longitudinal-slip value for Pirelli P Zero DHF, Michelin or Goody
 | ABS-017 | - | GT3 (drivers) | - | - | pedal feel | pulsation near threshold | 1-2 pulses felt | - | - | - | road/track GT3 (Porsche), not race-spec confirmed | driver | Rennlist forum | https://rennlist.com/forums/996-gt2-gt3-forum/266969-abs-off-on-track-3.html | - | anecdote | - | E | high | REAL (anecdotal) | Others report not feeling it |
 | ABS-018 | - | GT3 sim | - | - | trace interpretation | ABS onset not a fixed pedal % | - | - | - | - | simulator | - | GitGud sim guide | https://gitgudracingacademy.com/guides/gt3-sim-racing-guide/ | - | guide | - | E | - | SIMULATED | Supports variable-threshold modelling only |
 | ABS-019 | Pirelli/Michelin/Goodyear | GT3 slicks | - | - | tyre | peak longitudinal slip | not public | % | - | - | - | - | none found | - | - | - | - | E | unknown | - | Secondary: "lower than 10-20% road-tyre figure", no data |
+
+---
+
+## Addendum 2026-11-22: Bosch ABS M5 Kit Operation Manual v1.3 (13/03/2026), read in full
+
+Source: https://www.bosch-motorsport.com/content/downloads/Raceparts/Resources/pdf/Operation%20Manual_70618763_ABS_M5_Kit.pdf (56 pages, 18.6 MB; SHA-256 in `sources_index.csv`, SRC-142). Text extracted with pdf.js. Records ABS-M5-001 to ABS-M5-021 in `data/gt3_database.*`, all level B, MANUFACTURER, valid for the ABS system, not tied to a specific car.
+
+**What the manual settles**
+- **11 control maps plus OFF.** Position 1 is the most sensitive (e.g. heavy rain). Higher positions allow progressively more slip, and 11 is the most aggressive. Bosch suggests starting at 5–7 (p. 6–7, 40).
+- **Control principle.** Each wheel speed is compared with a predicted vehicle speed, and brake force is corrected per wheel to keep the "optimum slip level" (p. 6). This confirms a variable, per-wheel slip target rather than a fixed pedal threshold.
+- **Pedal feedback is official.** The return pump sends fluid back to the master cylinder, and the driver "can hear this return pumping … and feel the response of the brake pedal" (p. 6). The manual gives no amplitude or frequency.
+- **"A locking pressure of max. 80 bar is optimal"** (p. 23). This is installation guidance about caliper elasticity, not a measured GT3 value.
+- **Kerbs.** A wheel-speed disturbance freezes ABS control on that wheel for the duration of the event (p. 22).
+- **Logged signals on CAN.**
+  - Front and rear pressure: `P_FA` and `P_RA`, encoding range −42.5 to 425 bar, resolution 0.01526 bar.
+  - `ABS_Active`, `SwitchPosition` and the four wheel speeds (resolution 0.015625 m/s).
+  - Yaw rate (±163.84 °/s) and lateral acceleration (±4.18 g).
+  - Brake balance outputs.
+- **Hardware.** 2 accumulators of 5 cm³ each, 8 active valves (FIA GT3 conformity), 360 km/h maximum working speed, PSS-260 pressure sensors.
+
+**What it still does not contain**
+- Numeric slip targets per map.
+- Wheel-deceleration thresholds.
+- The control loop rate.
+- The size of the effect of the downforce- and lateral-g-dependent options.
+
+These are calibration data held by Bosch and the car manufacturer, so they are **not public**. That is different from not existing.
