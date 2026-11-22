@@ -16,8 +16,10 @@ public enum DeviceRole
 public sealed record KnownDevice(int VendorId, int ProductId, string Description, DeviceRole Role, string? Note = null);
 
 /// <summary>
-/// USB IDs from community sources (hid-fanatecff README). They are not an official list: the app
-/// shows them as declarations and asks the user to confirm the exact model.
+/// USB IDs from community sources (hid-fanatecff README) plus IDs observed on real setups. They are
+/// not an official list, and a model can report more than one PID (hid-fanatecff lists the CSL DD as
+/// 0x0020, but one was observed reporting 0x0004), so the app treats them as declarations and asks
+/// the user to confirm the exact model.
 /// </summary>
 public static class KnownDevices
 {
@@ -32,7 +34,8 @@ public static class KnownDevices
         new(FanatecVendorId, 0x0007, "Podium DD2", DeviceRole.WheelBase, "Experimental in hid-fanatecff"),
         new(FanatecVendorId, 0x0E03, "CSL Elite wheel base", DeviceRole.WheelBase),
         new(FanatecVendorId, 0x0001, "ClubSport Wheel Base V2", DeviceRole.WheelBase, "Experimental in hid-fanatecff"),
-        new(FanatecVendorId, 0x0004, "ClubSport Wheel Base V2.5", DeviceRole.WheelBase, "Experimental in hid-fanatecff"),
+        new(FanatecVendorId, 0x0004, "ClubSport Wheel Base V2.5 / CSL DD", DeviceRole.WheelBase,
+            "hid-fanatecff lists it as ClubSport V2.5; a CSL DD in PC mode (orange LED) reported this PID on the user's setup on 2026-11-22 (Fanatec App 1.6.1.3, driver 0.53.1). Confirm the model in the Fanatec App"),
         new(FanatecVendorId, 0x183B, "ClubSport Pedals V3", DeviceRole.Pedals, "Experimental in hid-fanatecff"),
         new(FanatecVendorId, 0x6204, "CSL Elite Pedals", DeviceRole.Pedals),
         new(FanatecVendorId, 0x6205, "CSL Pedals Load Cell", DeviceRole.Pedals, "Experimental in hid-fanatecff"),

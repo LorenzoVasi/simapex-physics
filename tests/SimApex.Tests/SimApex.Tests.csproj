@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\SimApex.Core\SimApex.Core.csproj" />
     <ProjectReference Include="..\..\src\SimApex.Analysis\SimApex.Analysis.csproj" />
+    <ProjectReference Include="..\..\src\SimApex.Sim.Lmu\SimApex.Sim.Lmu.csproj" />
   </ItemGroup>
 
 </Project>

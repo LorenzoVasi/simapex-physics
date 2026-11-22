@@ -25,6 +25,20 @@ try
         case "lmu-dump":
             DumpLmu(args);
             break;
+        case "record":
+            SimApex.Diagnostics.SessionRecorder.Run(
+                args.Length > 1 ? args[1] : Path.Combine("sessions", DateTime.Now.ToString("yyyyMMdd_HHmmss", CultureInfo.InvariantCulture)),
+                args.Length > 2 ? double.Parse(args[2], CultureInfo.InvariantCulture) : 100,
+                args.Length > 3 ? double.Parse(args[3], CultureInfo.InvariantCulture) : 120);
+            break;
+        case "decode":
+            if (args.Length < 2)
+            {
+                throw new ArgumentException("Usage: decode <session folder> [LMU SDK header folder]");
+            }
+
+            SimApex.Diagnostics.SessionDecoder.Run(args[1], args.Length > 2 ? args[2] : null);
+            break;
         case "report":
             WriteFullReport(args.Length > 1 ? args[1] : "simapex-diagnostics.txt");
             break;
@@ -148,5 +162,7 @@ static void PrintHelp()
           lmu                         check which LMU shared memory mappings exist and are live
           lmu-dump <name> <file>      copy one mapping to a file for layout analysis
           report [file]               hid + lmu, saved to a text file
+          record [dir] [hz] [min]     record LMU_Data changes and raw HID reports until dir/STOP exists
+          decode <dir> [sdk dir]      decode a recording with the LMU SDK headers into player_telemetry.csv
         """);
 }
