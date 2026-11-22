@@ -6,3 +6,6 @@ TestResults/
 *.dump
 simapex-diagnostics.txt
 sessions/
+research_notes/
+research/gt3-real-data/sources/
+reports/
