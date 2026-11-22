@@ -40,7 +40,10 @@ internal static class SessionRecorder
 
         long start = Stopwatch.GetTimestamp();
         var hidWriters = new List<(HidInterfaceInfo Device, BinaryWriter Writer, object Gate, int[] Count)>();
-        var devices = HidScanner.Scan();
+        // Never open the wheel base: on 2026-11-22 force feedback stopped working in LMU while the recorder
+        // held the base's HID interfaces open from before the game acquired the device. The game telemetry
+        // already carries steering and FFB, so only the pedals are recorded.
+        var devices = HidScanner.Scan().Where(d => d.Known?.Role != DeviceRole.WheelBase && d.VendorId != KnownDevices.FanatecVendorId).ToList();
         for (int i = 0; i < devices.Count; i++)
         {
             var writer = new BinaryWriter(new BufferedStream(File.Create(Path.Combine(folder, $"hid_{i}.bin")), 1 << 16));
