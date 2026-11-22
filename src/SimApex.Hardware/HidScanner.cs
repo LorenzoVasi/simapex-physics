@@ -44,8 +44,13 @@ public static class HidScanner
     /// Streams raw input reports from one interface, to locate the brake and steering bytes.
     /// Reading input reports does not send anything to the device.
     /// </summary>
-    public static void WatchRawReports(string devicePath, TimeSpan duration, Action<double, byte[]> onReport)
+    public static void WatchRawReports(string devicePath, TimeSpan duration, Action<double, byte[]> onReport) =>
+        WatchRawReports(devicePath, duration, onReport, CancellationToken.None);
+
+    /// <summary>As above, stopping early when <paramref name="cancellationToken"/> is cancelled.</summary>
+    public static void WatchRawReports(string devicePath, TimeSpan duration, Action<double, byte[]> onReport, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(onReport);
         HidDevice device = DeviceList.Local.GetHidDevices().FirstOrDefault(d => d.DevicePath == devicePath)
             ?? throw new InvalidOperationException("Device not found: it may have been disconnected.");
 
@@ -59,7 +64,7 @@ public static class HidScanner
             stream.ReadTimeout = 250;
             var buffer = new byte[device.GetMaxInputReportLength()];
             var clock = System.Diagnostics.Stopwatch.StartNew();
-            while (clock.Elapsed < duration)
+            while (clock.Elapsed < duration && !cancellationToken.IsCancellationRequested)
             {
                 try
                 {

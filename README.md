@@ -28,6 +28,7 @@ Calibrate a sim-racing rig so that what you feel matches real-car physics, using
 | `src/SimApex.Sim.Lmu` | Read-only probe of LMU / rF2 shared memory |
 | `src/SimApex.Hardware` | Read-only HID discovery of Fanatec and Thrustmaster devices |
 | `tools/SimApex.Diagnostics` | Read-only diagnostics CLI (`hid`, `hid-watch`, `lmu`, `lmu-dump`, `report`) |
+| `tools/SimApex.Tune` | Guided tuning (Italian UI): T0 baseline laps, T1 FFB gain vs saturation, T2 hands-off stability, T3 brake/ABS, report with confidence intervals; `--replay <dir>` analyses recorded sessions |
 | `tests/SimApex.Tests` | Tests against simulated data with known parameters |
 
 ## Build
