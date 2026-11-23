@@ -31,6 +31,7 @@ The six research lines (`notes/`):
 | `datasets.md` | Downloadable real telemetry files, parsers, sim-derived sets |
 | `car_specs.md` | Official per-car, per-generation technical data |
 | `literature_patents_dd_limits.md` | Papers, books, patents, Direct Drive and pedal limits |
+| `academic.md` | University theses and papers on GT3 and race-car steering/brake (added 2026-11-23) |
 
 ## 2. Data schema
 
@@ -104,7 +105,8 @@ Start with these. They are the most likely to move a finding.
 |---|---|---|
 | Bosch ABS M5 Kit Operation Manual (`bosch-motorsport.com/.../Operation Manual_70618763_ABS_M5_Kit.pdf`) | May contain slip targets and per-map behaviour | **Closed 2026-11-22.** Read in full; no numeric slip values (see `notes/abs.md` addendum). Re-check newer versions. |
 | Porsche Cup ABS manual, Manthey 991 Cup Gen 2 ABS manual | ABS map details | > 10 MB / 404 |
-| Chalmers thesis 230941, Cranfield and TU Delft F3 steering-force theses | Steering torque gradient (N·m/g) measurements | PDF not parsed / HTTP 500 |
+| Chalmers thesis 230941, Cranfield and TU Delft F3 steering-force theses | Steering torque gradient (N·m/g) measurements | PDF not parsed / HTTP 500. TU Delft thesis identified 2026-11-23 as Advocaat (2015), real race car vs rFactor FFB: still HTTP 500 (see `notes/academic.md` U1) |
+| TU Delft de Groot et al. 2009/2011/2013, brake pedal stiffness in a racing simulator | Only academic source on pedal stiffness vs pedal force for racing | HTTP 500, snippets only (`notes/academic.md` U2–U4) |
 | Norman, SAE 840069; SAE 2008-01-0502; SAE 2006-01-0796 | On-centre method and values | Paywalled, abstracts only |
 | Racecar Engineering "Steering Group" article | Possible race steering numbers | Paywalled |
 | ZF EPHS page, Pirelli Lamborghini assist page | Assist type and adjustability | 403 / DNS failure |
